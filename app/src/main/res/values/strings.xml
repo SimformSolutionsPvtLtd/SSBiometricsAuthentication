@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BiometricsAuthentication</string>
+    <string name="title_biometric_dialog">Biometrics</string>
+    <string name="text_description_biometrics_dialog">Sample biometrics demo</string>
+    <string name="text_negative_button_biometric_dialog">Later</string>
+    <string name="message_success">Success</string>
+    <string name="message_no_support_biometrics">Device not support Biometrics</string>
+    <string name="message_no_hardware_available">No Hardware available</string>
+</resources>
