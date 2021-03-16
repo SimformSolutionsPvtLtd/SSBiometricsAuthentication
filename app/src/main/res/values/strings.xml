@@ -1,9 +1,26 @@
 <resources>
     <string name="app_name">BiometricsAuthentication</string>
-    <string name="title_biometric_dialog">Biometrics</string>
-    <string name="text_description_biometrics_dialog">Sample biometrics demo</string>
-    <string name="text_negative_button_biometric_dialog">Later</string>
+    <string name="title_biometric_dialog">Simform Biometrics</string>
+    <string name="text_description_biometrics_dialog">Use biometrics to continue.</string>
+    <string name="text_negative_button_biometric_dialog">Use other way</string>
     <string name="message_success">Success</string>
     <string name="message_no_support_biometrics">Device not support Biometrics</string>
     <string name="message_no_hardware_available">No Hardware available</string>
+
+    <string name="error_hw_unavailable">The hardware is unavailable. Try again later.</string>
+    <string name="error_unable_to_process">The sensor was unable to process the current image.</string>
+    <string name="error_time_out">The current operation has been running too long and has timed out.</string>
+    <string name="error_no_space">The operation can\'t be completed because there is not enough device storage remaining.</string>
+    <string name="error_canceled">The operation was canceled by the user or because the biometric sensor is unavailable.</string>
+    <string name="error_lockout">The operation was canceled because the biometrics is locked out due to too many attempts. This occurs after 5 failed attempts, and lasts for 30 seconds.</string>
+    <string name="error_vendor">The operation failed due to a vendor-specific error.</string>
+    <string name="error_lockout_permanent">Wrong biometrics too many times. Use device credential to unlock.</string>
+    <string name="error_user_canceled">The user canceled the operation.</string>
+    <string name="error_no_biometrics">The Device does not have any biometrics enrolled.</string>
+    <string name="error_hw_not_present">The device does not have the required authentication hardware.</string>
+    <string name="error_no_device_credentials">The device does not have pin, pattern, or password set up.</string>
+    <string name="error_security_update_required">A security vulnerability has been discovered with one or more hardware sensors. The affected sensor(s) are unavailable until a security update has addressed the issue.</string>
+    <string name="error_unknown">Unknown error.</string>
+    <string name="message_user_app_authentication">Denied for Biometrics</string>
+    <string name="text_unlock">Unlock</string>
 </resources>
