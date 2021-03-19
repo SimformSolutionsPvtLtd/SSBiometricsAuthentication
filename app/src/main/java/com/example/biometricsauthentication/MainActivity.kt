@@ -4,49 +4,63 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import android.widget.Toast
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
+import com.example.biometricsauthentication.databinding.ActivityMainBinding
+import java.util.concurrent.Executor
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
+
+    private lateinit var biometricPrompt: BiometricPrompt
+    private lateinit var executor: Executor
+    private lateinit var callBack: BiometricPrompt.AuthenticationCallback
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        val executor = ContextCompat.getMainExecutor(this)
+        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+        binding.clickHandler = this
+        init()
         checkDeviceCanAuthenticateWithBiometrics()
+    }
 
-        val callBack = object : BiometricPrompt.AuthenticationCallback() {
+    override fun onClick(view: View?) {
+        when (view?.id) {
+            R.id.btn_unlock -> {
+                authenticateWithBiometrics()
+            }
+        }
+    }
+
+    private fun init() {
+        executor = ContextCompat.getMainExecutor(this)
+        callBack = object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
+                Toast.makeText(this@MainActivity, getString(R.string.error_unknown), Toast.LENGTH_LONG).show()
             }
 
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
+                Toast.makeText(this@MainActivity, getString(R.string.message_success), Toast.LENGTH_LONG).show()
             }
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
+                Toast.makeText(this@MainActivity, getErrorMessage(errorCode), Toast.LENGTH_LONG).show()
             }
         }
-        val biometricPrompt = BiometricPrompt(this, executor, callBack)
-
-        val promptInfo = BiometricPrompt.PromptInfo.Builder().apply {
-            setTitle(getString(R.string.title_biometric_dialog))
-            setDescription(getString(R.string.text_description_biometrics_dialog))
-            setNegativeButtonText(getString(R.string.text_negative_button_biometric_dialog))
-        }.build()
-
-        biometricPrompt.authenticate(promptInfo)
+        biometricPrompt = BiometricPrompt(this, executor, callBack)
     }
 
     private fun checkDeviceCanAuthenticateWithBiometrics() {
-
         val biometricManager = BiometricManager.from(this)
-        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
+        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
-                Toast.makeText(this, getString(R.string.message_success), Toast.LENGTH_LONG).show()
+
             }
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
                 Toast.makeText(this, getString(R.string.message_no_support_biometrics), Toast.LENGTH_LONG).show()
@@ -57,13 +71,86 @@ class MainActivity : AppCompatActivity() {
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
                 startActivityForResult(biometricsEnrollIntent(), RC_BIOMETRICS_ENROLL)
             }
+            BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
+                Toast.makeText(this, getString(R.string.error_security_update_required), Toast.LENGTH_LONG).show()
+            }
+            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
+                Toast.makeText(this, getString(R.string.error_unknown), Toast.LENGTH_LONG).show()
+            }
+            BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> {
+                Toast.makeText(this, getString(R.string.error_unknown), Toast.LENGTH_LONG).show()
+            }
         }
     }
 
     private fun biometricsEnrollIntent(): Intent {
         return Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-            putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED, BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+            putExtra(
+                    Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                    BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+            )
         }
+    }
+
+    private fun getErrorMessage(errorCode: Int): String {
+        return when (errorCode) {
+            BiometricPrompt.ERROR_NEGATIVE_BUTTON -> {
+                getString(R.string.message_user_app_authentication)
+            }
+            BiometricPrompt.ERROR_HW_UNAVAILABLE -> {
+                getString(R.string.error_hw_unavailable)
+            }
+            BiometricPrompt.ERROR_UNABLE_TO_PROCESS -> {
+                getString(R.string.error_unable_to_process)
+            }
+            BiometricPrompt.ERROR_TIMEOUT -> {
+                getString(R.string.error_time_out)
+            }
+            BiometricPrompt.ERROR_NO_SPACE -> {
+                getString(R.string.error_no_space)
+            }
+            BiometricPrompt.ERROR_CANCELED -> {
+                getString(R.string.error_canceled)
+            }
+            BiometricPrompt.ERROR_LOCKOUT -> {
+                getString(R.string.error_lockout)
+            }
+            BiometricPrompt.ERROR_VENDOR -> {
+                getString(R.string.error_vendor)
+            }
+            BiometricPrompt.ERROR_LOCKOUT_PERMANENT -> {
+                getString(R.string.error_lockout_permanent)
+            }
+            BiometricPrompt.ERROR_USER_CANCELED -> {
+                getString(R.string.error_user_canceled)
+            }
+            BiometricPrompt.ERROR_NO_BIOMETRICS -> {
+                startActivityForResult(biometricsEnrollIntent(), RC_BIOMETRICS_ENROLL)
+                getString(R.string.error_no_biometrics)
+            }
+            BiometricPrompt.ERROR_HW_NOT_PRESENT -> {
+                getString(R.string.error_hw_not_present)
+            }
+            BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL -> {
+                getString(R.string.error_no_device_credentials)
+            }
+            BiometricPrompt.ERROR_SECURITY_UPDATE_REQUIRED -> {
+                getString(R.string.error_security_update_required)
+            }
+            else -> {
+                getString(R.string.error_unknown)
+            }
+        }
+    }
+
+    private fun authenticateWithBiometrics() {
+        val promptInfo = BiometricPrompt.PromptInfo.Builder().apply {
+            setTitle(getString(R.string.title_biometric_dialog))
+            setDescription(getString(R.string.text_description_biometrics_dialog))
+            setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+        }.build()
+
+        biometricPrompt.authenticate(promptInfo)
     }
 
     companion object {
