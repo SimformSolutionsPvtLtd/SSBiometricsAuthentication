@@ -132,6 +132,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 getString(R.string.error_hw_not_present)
             }
             BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL -> {
+                startActivityForResult(biometricsEnrollIntent(), RC_BIOMETRICS_ENROLL)
                 getString(R.string.error_no_device_credentials)
             }
             BiometricPrompt.ERROR_SECURITY_UPDATE_REQUIRED -> {
