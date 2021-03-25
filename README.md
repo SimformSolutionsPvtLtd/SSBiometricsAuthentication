@@ -11,6 +11,7 @@
 
 ### About this project:
 This applications is sample for Biometrics Authentication in Android using Biometrics API
+
 ![](biometrics.gif)
 
 ### This application provides the below feature
