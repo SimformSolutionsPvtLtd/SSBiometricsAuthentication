@@ -10,7 +10,7 @@
 * In addition to supporting multiple biometric authentication form factors, the API has made it much easier for developers to check whether a given device has biometric sensors. And if there are no biometric sensors present, the API allows developers to specify whether they want to use device credentials in their apps.
 
 ### About this project:
-This applications is sample for Biometrics Authentication in Android using Biometrics API
+* This applications is sample for Biometrics Authentication in Android using Biometrics API
 
 ![](biometrics.gif)
 
