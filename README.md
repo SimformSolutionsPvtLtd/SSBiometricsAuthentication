@@ -12,11 +12,14 @@
 ### About this project:
 * This applications is sample for Biometrics Authentication in Android using Biometrics API
 
-![](biometrics.gif)
+| Finger Print Unlock | Face Unlock |
+|--|--|
+| ![](biometrics.gif) | ![](face_unlock.gif) |
 
 ### This application provides the below feature
 
 * Fingerprint Authentication
+* Face Authentication
 * PIN/Password/Pattern Authentication
 
 ### How it works:
