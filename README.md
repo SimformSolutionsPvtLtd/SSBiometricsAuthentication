@@ -25,8 +25,8 @@
 ### How it works:
 1. Add the Gradle dependency to your app module
 ```
-	def biometric_version=  '1.0.0-rc02'
-	implementation "androidx.biometric:biometric:$biometric_version"
+    def biometric_version=  '1.0.0-rc02'
+    implementation "androidx.biometric:biometric:$biometric_version"
 ```
 2. Check whether the device supports biometric authentication
 ```
@@ -37,39 +37,39 @@
 ```
 3. Create an instance of BiometricPrompt
 ```
-	private fun instanceOfBiometricPrompt():  BiometricPrompt  {
-		val executor =  ContextCompat.getmainExecutor(context)
-		val callback =  object:BiometricPrompt.AuthenticationCallback()  {
-			override fun onAuthenticationError(errorCode:  Int, errString:  CharSequence) {
-				super.onAuthenticationError(errorCode, errString)
-				showMessage("$errorCode :: $errString")
-			}
-			override fun onAuthenticationFailed()  {
-				super.onAuthenticationFailed()
-				showMessage("Authentication failed for an unknown reason")
-			}
-			override fun onAuthenticationSucceeded(result:  BiometricPrompt.AuthenticationResult{
-				super.onAuthenticationSucceeded(result)
-				showMessage("Authentication was successful")
-			}
-		}
-	val biometricPrompt =  BiometricPrompt(context, executor, callback)
-	return biometricPrompt
-	}
+    private fun instanceOfBiometricPrompt():  BiometricPrompt  {
+        val executor =  ContextCompat.getmainExecutor(context)
+        val callback =  object:BiometricPrompt.AuthenticationCallback()  {
+            override fun onAuthenticationError(errorCode:  Int, errString:  CharSequence) {
+                super.onAuthenticationError(errorCode, errString)
+                showMessage("$errorCode :: $errString")
+            }
+            override fun onAuthenticationFailed()  {
+                super.onAuthenticationFailed()
+                showMessage("Authentication failed for an unknown reason")
+            }
+            override fun onAuthenticationSucceeded(result:  BiometricPrompt.AuthenticationResult{
+                super.onAuthenticationSucceeded(result)
+                showMessage("Authentication was successful")
+            }
+        }
+        val biometricPrompt =  BiometricPrompt(context, executor, callback)
+        return biometricPrompt
+    }
 ```
 4. Build a PromptInfo object
 ```
-	promptInfo =  BiometricPrompt.PromptInfo.Builder()
-		.setTitle("Biometric login for my app")
-		.setSubtitle("Log in using your biometric credential")
-		// Can't call setNegativeButtonText() and  // setAllowedAuthenticators(... or DEVICE_CREDENTIAL) at the same time.//
-		//.setNegativeButtonText("Use account password") //
-		.setAllowedAuthenticators(BIOMETRIC_WEAK or DEVICE_CREDENTIAL)
-		.build()
+    promptInfo =  BiometricPrompt.PromptInfo.Builder()
+	    .setTitle("Biometric login for my app")
+	    .setSubtitle("Log in using your biometric credential")
+	    // Can't call setNegativeButtonText() and  // setAllowedAuthenticators(... or DEVICE_CREDENTIAL) at the same time.//
+	    //.setNegativeButtonText("Use account password") //
+	    .setAllowedAuthenticators(BIOMETRIC_WEAK or DEVICE_CREDENTIAL)
+	    .build()
 ```
 5.  Ask the user to authenticate
 ```
-	biometricPrompt.authenticate(promptInfo)
+    biometricPrompt.authenticate(promptInfo)
 ```
 For more info go to __[Android Biometric Blog](https://android-developers.googleblog.com/2019/10/one-biometric-api-over-all-android.html)__
 
