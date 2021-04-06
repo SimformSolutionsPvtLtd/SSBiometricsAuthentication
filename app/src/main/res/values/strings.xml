@@ -23,4 +23,7 @@
     <string name="error_unknown">Unknown error.</string>
     <string name="message_user_app_authentication">Denied for Biometrics</string>
     <string name="text_unlock">Unlock</string>
+    <string name="message_set_up_pattern">Set up PIN/Pattern/Password.</string>
+    <string name="title_device_lock">Device Lock</string>
+    <string name="title_set_up_device_lock">Set up Device lock.</string>
 </resources>
