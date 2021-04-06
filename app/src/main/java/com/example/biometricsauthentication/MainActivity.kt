@@ -1,11 +1,14 @@
 package com.example.biometricsauthentication
 
+
+import android.app.KeyguardManager
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -13,11 +16,13 @@ import androidx.databinding.DataBindingUtil
 import com.example.biometricsauthentication.databinding.ActivityMainBinding
 import java.util.concurrent.Executor
 
+
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var executor: Executor
     private lateinit var callBack: BiometricPrompt.AuthenticationCallback
+    private var keyguardManager: KeyguardManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +74,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 Toast.makeText(this, getString(R.string.message_no_hardware_available), Toast.LENGTH_LONG).show()
             }
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                startActivityForResult(biometricsEnrollIntent(), RC_BIOMETRICS_ENROLL)
+                checkAPILevelAndProceed()
             }
             BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
                 Toast.makeText(this, getString(R.string.error_security_update_required), Toast.LENGTH_LONG).show()
@@ -89,6 +94,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
                     BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL
             )
+        }
+    }
+
+    private fun setUpDeviceLockInAPIBelow23Intent(): Intent {
+        return Intent(Settings.ACTION_SECURITY_SETTINGS)
+    }
+
+    private fun checkAPILevelAndProceed() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            startActivityForResult(setUpDeviceLockInAPIBelow23Intent(), RC_DEVICE_CREDENTIAL_ENROLL)
+        } else {
+            startActivityForResult(biometricsEnrollIntent(), RC_BIOMETRICS_ENROLL)
         }
     }
 
@@ -125,7 +142,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 getString(R.string.error_user_canceled)
             }
             BiometricPrompt.ERROR_NO_BIOMETRICS -> {
-                startActivityForResult(biometricsEnrollIntent(), RC_BIOMETRICS_ENROLL)
+                checkAPILevelAndProceed()
                 getString(R.string.error_no_biometrics)
             }
             BiometricPrompt.ERROR_HW_NOT_PRESENT -> {
@@ -151,10 +168,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
         }.build()
 
-        biometricPrompt.authenticate(promptInfo)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+            keyguardManager?.let { manager ->
+                if (manager.isKeyguardSecure) {
+                    biometricPrompt.authenticate(promptInfo)
+                } else {
+                    startActivityForResult(setUpDeviceLockInAPIBelow23Intent(), RC_DEVICE_CREDENTIAL_ENROLL)
+                }
+            }
+        } else {
+            biometricPrompt.authenticate(promptInfo)
+        }
     }
 
     companion object {
         const val RC_BIOMETRICS_ENROLL = 10
+        const val RC_DEVICE_CREDENTIAL_ENROLL = 18
     }
 }
