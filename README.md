@@ -2,14 +2,14 @@
 
 [![Android-Studio](https://img.shields.io/badge/Android%20Studio-4.0+-orange.svg?style=flat)](https://developer.android.com/studio/)
 [![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.4.10-blue.svg)](https://kotlinlang.org)
-[![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=19)
+[![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21)
 
 ### Biometrics API
 * With the launch of Android 10 (API level 29), developers can now use the Biometric API, part of the AndroidX Biometric Library, for all their on-device user authentication needs.
 * The Android Framework and Security team has added a number of significant features to the AndroidX Biometric Library, which makes all of the biometric behavior from Android 10 available to all devices that run Android 6.0 (API level 23) or higher.
 * In addition to supporting multiple biometric authentication form factors, the API has made it much easier for developers to check whether a given device has biometric sensors. And if there are no biometric sensors present, the API allows developers to specify whether they want to use device credentials in their apps.
 
-### About this project:
+### About this project :
 * This applications is sample for Biometrics Authentication in Android using Biometrics API
 
 | Finger Print Unlock | Face Unlock |
@@ -22,7 +22,7 @@
 * Face Authentication
 * PIN/Password/Pattern Authentication
 
-### How it works:
+### How it works :
 1. Add the Gradle dependency to your app module
 ```
     def biometric_version=  '1.0.0-rc02'
@@ -71,7 +71,20 @@
 ```
     biometricPrompt.authenticate(promptInfo)
 ```
-For more info go to __[Android Biometric Blog](https://android-developers.googleblog.com/2019/10/one-biometric-api-over-all-android.html)__
+### For API level 21 -23 :
+* For API level 21-23, you need to check whether Screen lock is enabled or not before authentication.
+```
+    keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+    if (keyguardManager.isKeyguardSecure) {
+        //Screen lock is enabled, do authentication.
+    }
+```
+* If screen lock is not enabled than use below code to navigate user to setting screen for set up of Screen lock.
+```
+    startActivityForResult(Intent(Settings.ACTION_SECURITY_SETTINGS), REQUEST_CODE)
+```
+
+For more info go to __[Android Developers Biometric Blog](https://android-developers.googleblog.com/2019/10/one-biometric-api-over-all-android.html)__
 
 ## Find this example useful? :heart:
 Support it by joining __[stargazers](https://github.com/SimformSolutionsPvtLtd/SSBiometricsAuthentication/stargazers)__ for this repository. :star:
