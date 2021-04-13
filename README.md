@@ -24,19 +24,24 @@
 
 ### How it works :
 1. Add the Gradle dependency to your app module
-```
+
+```groovy
     def biometric_version=  '1.0.0-rc02'
     implementation "androidx.biometric:biometric:$biometric_version"
 ```
+
 2. Check whether the device supports biometric authentication
-```
+
+```kotlin
     val biometricManager =  BiometricManager.from(context)
     if(biometricManager.canAuthenticate()  ==  BiometricManager.BIOMETRIC_SUCCESS){
 	    // you can authenticate with biometrics
     }
 ```
+
 3. Create an instance of BiometricPrompt
-```
+
+```kotlin
     private fun instanceOfBiometricPrompt():  BiometricPrompt  {
         val executor =  ContextCompat.getmainExecutor(context)
         val callback =  object:BiometricPrompt.AuthenticationCallback()  {
@@ -57,8 +62,10 @@
         return biometricPrompt
     }
 ```
+
 4. Build a PromptInfo object
-```
+
+```kotlin
     promptInfo =  BiometricPrompt.PromptInfo.Builder()
 	    .setTitle("Biometric login for my app")
 	    .setSubtitle("Log in using your biometric credential")
@@ -67,20 +74,23 @@
 	    .setAllowedAuthenticators(BIOMETRIC_WEAK or DEVICE_CREDENTIAL)
 	    .build()
 ```
+
 5.  Ask the user to authenticate
-```
+
+```kotlin
     biometricPrompt.authenticate(promptInfo)
 ```
+
 ### For API level 21 -23 :
 * For API level 21-23, you need to check whether Screen lock is enabled or not before authentication.
-```
+```kotlin
     keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
     if (keyguardManager.isKeyguardSecure) {
         //Screen lock is enabled, do authentication.
     }
 ```
 * If screen lock is not enabled than use below code to navigate user to setting screen for set up of Screen lock.
-```
+```kotlin
     startActivityForResult(Intent(Settings.ACTION_SECURITY_SETTINGS), REQUEST_CODE)
 ```
 
@@ -88,6 +98,7 @@ For more info go to __[Android Developers Biometric Blog](https://android-develo
 
 ## Find this example useful? :heart:
 Support it by joining __[stargazers](https://github.com/SimformSolutionsPvtLtd/SSBiometricsAuthentication/stargazers)__ for this repository. :star:
+
 ## License
 
 ```
@@ -96,7 +107,9 @@ Copyright 2020 Simform Solutions
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
+ 
     http://www.apache.org/licenses/LICENSE-2.0
+ 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
