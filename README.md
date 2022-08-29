@@ -1,7 +1,7 @@
 # Biometrics Authentication in Android #
 
 [![Android-Studio](https://img.shields.io/badge/Android%20Studio-4.0+-orange.svg?style=flat)](https://developer.android.com/studio/)
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.4.32-blue.svg)](https://kotlinlang.org)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.6.0-blue.svg)](https://kotlinlang.org)
 [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21)
 
 ### Biometrics API
@@ -26,7 +26,7 @@
 1. Add the Gradle dependency to your app module
 
 ```groovy
-    def biometric_version=  '1.0.0-rc02'
+    def biometric_version=  '1.2.0-alpha04'
     implementation "androidx.biometric:biometric:$biometric_version"
 ```
 
